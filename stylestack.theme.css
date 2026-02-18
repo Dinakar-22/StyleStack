@@ -6,7 +6,6 @@
  */
  /*
  * FIXES :
- *   - Removed raw.githubusercontent.com @import (CORS-blocked in Discord)
  *   - Inlined all critical StyleStack panel separation logic
  *   - Fixed font load (Google Fonts @import preserved — works fine)
  *   - Background GIF now loads via inlined bg rule
@@ -117,7 +116,6 @@
     --window-control-size: 14px;
 }
 
-
 /* ─── Body / Font Setup ──────────────────────────────────────────── */
 body,
 .theme-dark,
@@ -175,14 +173,12 @@ body,
     --focus-primary: var(--accent-2);
 }
 
-
 /* ─── App Root Transparency ──────────────────────────────────────── */
 #app-mount,
 .app__bd9e4,
 [class*="app_"] {
     background: transparent !important;
 }
-
 
 /* ─── Background Image (Rem GIF) ────────────────────────────────── */
 /* Applied to the main Discord background layer */
@@ -195,7 +191,6 @@ body,
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
 }
-
 
 /* ─── Shared Panel Mixin ─────────────────────────────────────────── */
 /* All major panels get: bg, border-radius, border, blur */
@@ -252,7 +247,6 @@ body,
     border-color: var(--border-hover) !important;
 }
 
-
 /* ─── Layout: Sidebar Group ──────────────────────────────────────── */
 .sidebar__5e434 {
     margin: 0 var(--gap) var(--gap) var(--gap);
@@ -286,7 +280,6 @@ body,
 .wrapper_ef3116 {
     mask: none !important;
 }
-
 
 /* ─── Layout: Chat Area ──────────────────────────────────────────── */
 .chat_f75fb0 {
@@ -558,7 +551,6 @@ body,
     border-radius: calc(var(--radius-lg) - 4px);
 }
 
-
 /* ─── Floating Elements (Tooltips, Menus, Popouts) ───────────────── */
 .tooltip_c36707,
 .menu_c1e9c4,
@@ -575,7 +567,6 @@ body,
     border-radius: var(--radius-md);
 }
 
-
 /* ─── Profile Popout ─────────────────────────────────────────────── */
 .outer_c0bea0 {
     border: var(--border-thickness) solid var(--border);
@@ -587,7 +578,6 @@ body,
 .root__24502 {
     background: none !important;
 }
-
 
 /* ─── Channel List Animations ────────────────────────────────────── */
 .wrapper__2ea32 .link__2ea32,
@@ -629,7 +619,6 @@ body,
 .wrapper__2ea32.typeThread__2ea32:hover .unread__2ea32 {
     margin-left: 0;
 }
-
 
 /* ─── DM Button (Home Icon) ──────────────────────────────────────── */
 /* Hide the default Discord home SVG */
@@ -873,4 +862,517 @@ body,
 .panels__5e434 {
     right: 0;
     left: unset;
+}
+
+/* ENHANCEMENT 1 — GPU Optimization
+   Forces compositor layers on all panels — eliminates scroll jank */
+
+.guilds__5e434,
+.sidebarList__5e434,
+.panels__5e434,
+.chatContent_f75fb0,
+.container_c8ffbb,
+.chat_f75fb0,
+.headerBar__1a9ce,
+.scroller__23746,
+.content_f75fb0,
+.shop__6db1d,
+.searchResultsWrap_a98f3b,
+.container_f369db,
+.nowPlayingColumn__133bf,
+.container_a592e1,
+.callContainer_cb9592,
+.callContainer__722ff {
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+[class*='scroll'],
+[class*='Scroller'],
+[class*='scroller'] {
+    will-change: scroll-position;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+/* ENHANCEMENT 2 — Frosted Message Hover
+   Messages blur + slide 2px on hover, lifting off the glass */
+
+.message__5126c {
+    transition:
+        transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+        backdrop-filter 0.2s ease,
+        -webkit-backdrop-filter 0.2s ease,
+        background-color 0.15s ease !important;
+    will-change: transform;
+}
+
+.message__5126c:hover {
+    transform: translateY(-2px) translateZ(0) !important;
+    backdrop-filter: blur(10px) saturate(1.4) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(1.4) !important;
+    background-color: hsla(220, 19%, 40%, 0.12) !important;
+    z-index: 1;
+    position: relative;
+}
+
+/* ENHANCEMENT 3 — Micro Interactions (Spring Physics)
+   cubic-bezier(0.34, 1.56, 0.64, 1) on server icons, buttons, reactions */
+
+.wrapper__6e9f8 > .childWrapper__6e9f8,
+.iconWrapper__6e9f8 {
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    will-change: transform;
+}
+
+.wrapper__6e9f8:hover > .childWrapper__6e9f8,
+.wrapper__6e9f8:hover > .iconWrapper__6e9f8 {
+    transform: scale(1.12) translateZ(0) !important;
+}
+
+.wrapper__6e9f8:active > .childWrapper__6e9f8,
+.wrapper__6e9f8:active > .iconWrapper__6e9f8 {
+    transform: scale(0.9) translateZ(0) !important;
+    transition-duration: 0.1s !important;
+}
+
+[class*='reaction_'],
+[class*='reactionBtn'] {
+    transition:
+        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        background-color 0.15s ease,
+        border-color 0.15s ease !important;
+    will-change: transform;
+}
+
+[class*='reaction_']:hover,
+[class*='reactionBtn']:hover {
+    transform: scale(1.18) translateZ(0) !important;
+}
+
+[class*='reaction_']:active,
+[class*='reactionBtn']:active {
+    transform: scale(0.9) translateZ(0) !important;
+}
+
+[class*='emojiButton'],
+[class*='emoji-picker'] button {
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+[class*='emojiButton']:hover,
+[class*='emoji-picker'] button:hover {
+    transform: scale(1.25) translateZ(0) !important;
+}
+
+/* ENHANCEMENT 4 — Accent Gradient Text Selection
+   Text selection highlights in theme blue instead of Discord gray */
+
+::selection {
+    background: hsla(215, 85%, 55%, 0.40) !important;
+    color: hsl(220, 100%, 98%) !important;
+}
+
+::-moz-selection {
+    background: hsla(215, 85%, 55%, 0.40) !important;
+    color: hsl(220, 100%, 98%) !important;
+}
+
+.markup__75297 ::selection,
+[class*='messageContent'] ::selection,
+[class*='markup'] ::selection {
+    background: hsla(215, 85%, 55%, 0.45) !important;
+    color: hsl(220, 100%, 98%) !important;
+    text-shadow: 0 0 12px hsla(215, 100%, 75%, 0.35);
+}
+
+/* ENHANCEMENT 5 — Channel Hover Slide (GPU-smooth)
+   Uses transform: translateX() instead of margin-left */
+
+.wrapper__2ea32 .link__2ea32,
+.container__91a9d,
+.channel__972a0,
+.side_aa8da2 .item_aa8da2 {
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    will-change: transform !important;
+    margin-left: 0 !important;
+}
+
+.wrapper__2ea32:hover .link__2ea32,
+.side_aa8da2 .item_aa8da2:hover {
+    transform: translateX(10px) translateZ(0) !important;
+    margin-left: 0 !important;
+}
+
+.container__91a9d:hover,
+.channel__972a0:hover {
+    transform: translateX(18px) translateZ(0) !important;
+    margin-left: 0 !important;
+}
+
+.unread__2ea32 {
+    transition: transform var(--list-item-transition) !important;
+    will-change: transform !important;
+    margin-left: -4px !important;
+}
+
+.wrapper__2ea32:hover .unread__2ea32 {
+    transform: translateX(8px) translateZ(0) !important;
+    margin-left: -4px !important;
+}
+
+.typeThread__2ea32 .unread__2ea32 {
+    margin-left: -8px !important;
+}
+
+.wrapper__2ea32.typeThread__2ea32:hover .unread__2ea32 {
+    transform: translateX(8px) translateZ(0) !important;
+    margin-left: -8px !important;
+}
+
+/* ENHANCEMENT 6 — Scrollbar Glow Trail
+   3px slim scrollbar with blue accent glow that intensifies on hover */
+
+::-webkit-scrollbar {
+    width: 3px !important;
+    height: 3px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent !important;
+    border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: hsla(215, 85%, 55%, 0.35) !important;
+    border-radius: 99px !important;
+    box-shadow:
+        0 0 4px 1px hsla(215, 85%, 55%, 0.25),
+        0 0 8px 2px hsla(215, 85%, 55%, 0.10) !important;
+    transition: background 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: hsla(215, 85%, 65%, 0.75) !important;
+    box-shadow:
+        0 0 6px 2px hsla(215, 85%, 65%, 0.55),
+        0 0 14px 4px hsla(215, 85%, 65%, 0.30),
+        0 0 22px 6px hsla(215, 85%, 65%, 0.12) !important;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: hsla(215, 85%, 70%, 0.9) !important;
+    box-shadow:
+        0 0 8px 3px hsla(215, 85%, 70%, 0.65),
+        0 0 18px 6px hsla(215, 85%, 70%, 0.35) !important;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent !important;
+}
+
+[class*='scroll'],
+[class*='Scroller'],
+[class*='scroller'] {
+    scrollbar-width: thin !important;
+    scrollbar-color: hsla(215, 85%, 55%, 0.35) transparent !important;
+}
+
+/* ENHANCEMENT 7 — Accent Reactive UI
+   Selected channel gradient, chatbar focus ring, mention badge pulse */
+
+.wrapper__2ea32.modeSelected__2ea32 .link__2ea32,
+[class*='selected__'][class*='wrapper__'] [class*='link__'],
+.channel__972a0.selected__972a0 {
+    background: linear-gradient(
+        90deg,
+        hsla(215, 85%, 55%, 0.25) 0%,
+        hsla(215, 85%, 55%, 0.10) 60%,
+        transparent 100%
+    ) !important;
+    border-left: 2px solid var(--accent-3) !important;
+    border-radius: var(--radius-sm) !important;
+}
+
+.channelTextArea_f75fb0:focus-within,
+[class*='channelTextArea']:focus-within {
+    border-color: hsla(215, 85%, 55%, 0.6) !important;
+    box-shadow:
+        0 0 0 2px hsla(215, 85%, 55%, 0.15),
+        0 0 12px 2px hsla(215, 85%, 55%, 0.10) !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+@keyframes ss-badge-pulse {
+    0%   { box-shadow: 0 0 0 0   hsla(215, 85%, 55%, 0.7); }
+    50%  { box-shadow: 0 0 0 4px hsla(215, 85%, 55%, 0.0); }
+    100% { box-shadow: 0 0 0 0   hsla(215, 85%, 55%, 0.0); }
+}
+
+[class*='numberBadge'],
+[class*='badge_'],
+[class*='mentionsBadge'] {
+    animation: ss-badge-pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+    background: linear-gradient(135deg, var(--accent-3) 0%, var(--accent-4) 100%) !important;
+    border: none !important;
+}
+
+/* ENHANCEMENT 8 — Glass Reflection
+   1px shine gradient across top edge of every panel (simulates light on glass) */
+
+.guilds__5e434,
+.sidebarList__5e434,
+.chatContent_f75fb0,
+.container_c8ffbb,
+.container__9293f,
+.nowPlayingColumn__133bf,
+.shop__6db1d,
+.searchResultsWrap_a98f3b,
+.container_a592e1 {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.guilds__5e434::after,
+.sidebarList__5e434::after,
+.chatContent_f75fb0::after,
+.container_c8ffbb::after,
+.container__9293f::after,
+.nowPlayingColumn__133bf::after,
+.shop__6db1d::after,
+.searchResultsWrap_a98f3b::after,
+.container_a592e1::after {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 1px !important;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        hsla(0, 0%, 100%, 0.12) 20%,
+        hsla(0, 0%, 100%, 0.22) 50%,
+        hsla(0, 0%, 100%, 0.12) 80%,
+        transparent 100%
+    ) !important;
+    pointer-events: none !important;
+    z-index: 10 !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+}
+
+.tooltip_c36707,
+.menu_c1e9c4,
+.contentWrapper__08434,
+.popout__76f04 {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.tooltip_c36707::after,
+.menu_c1e9c4::after,
+.contentWrapper__08434::after,
+.popout__76f04::after {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 1px !important;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        hsla(0, 0%, 100%, 0.18) 30%,
+        hsla(0, 0%, 100%, 0.28) 50%,
+        hsla(0, 0%, 100%, 0.18) 70%,
+        transparent 100%
+    ) !important;
+    pointer-events: none !important;
+    z-index: 10 !important;
+    border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
+}
+
+/* ENHANCEMENT 9 — Smooth Theme Lighting
+   Global transition on all color changes — every state dissolves instead of snapping */
+
+*,
+*::before,
+*::after {
+    transition:
+        background-color 0.18s ease,
+        border-color     0.18s ease,
+        color            0.18s ease,
+        opacity          0.18s ease,
+        box-shadow       0.18s ease !important;
+}
+
+/* Exclude things that must not animate */
+img,
+video,
+canvas,
+svg,
+[class*='animated'],
+[class*='animat'] {
+    transition: none !important;
+}
+
+/* Re-enforce spring physics for window buttons (override wildcard above) */
+.winButton_c38106 {
+    transition:
+        transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+        filter 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease !important;
+}
+
+/* ENHANCEMENT 10 — Animated Mention Pulse
+   Mentions flash blue then fade in + left bar snaps up + badge sonar ripple ring */
+
+@keyframes ss-mention-flash {
+    0%   { background-color: hsla(215, 85%, 55%, 0.45); }
+    40%  { background-color: hsla(215, 85%, 55%, 0.22); }
+    100% { background-color: var(--mention); }
+}
+
+.message__5126c.mentioned__5126c {
+    animation: ss-mention-flash 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    background-color: var(--mention) !important;
+}
+
+.message__5126c.mentioned__5126c::before,
+[class*='mentioned']::before {
+    background: linear-gradient(
+        180deg,
+        var(--accent-2) 0%,
+        var(--accent-3) 50%,
+        var(--accent-4) 100%
+    ) !important;
+    transition: height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+@keyframes ss-sonar-ring {
+    0%   { box-shadow: 0 0 0 0    hsla(215, 85%, 55%, 0.6); opacity: 1; }
+    100% { box-shadow: 0 0 0 10px hsla(215, 85%, 55%, 0.0); opacity: 0; }
+}
+
+[class*='numberBadge'],
+[class*='badge_'],
+[class*='mentionsBadge'] {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+[class*='numberBadge']::after,
+[class*='badge_']::after,
+[class*='mentionsBadge']::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: 50% !important;
+    animation: ss-sonar-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+    pointer-events: none !important;
+}
+
+@keyframes ss-unread-flash {
+    0%   { transform: scaleY(0) translateZ(0); opacity: 0; }
+    60%  { transform: scaleY(1.2) translateZ(0); opacity: 1; }
+    100% { transform: scaleY(1) translateZ(0); opacity: 1; }
+}
+
+.unread__2ea32 {
+    animation: ss-unread-flash 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+/* ENHANCEMENT 11 — Smooth Open Animations
+   Popouts, modals, context menus, sidebar, and messages all animate in
+   with spring physics */
+
+@keyframes ss-spring-enter {
+    0%   { opacity: 0; transform: scale(0.88) translateY(6px) translateZ(0); }
+    60%  { opacity: 1; transform: scale(1.02) translateY(-1px) translateZ(0); }
+    100% { opacity: 1; transform: scale(1)    translateY(0)    translateZ(0); }
+}
+
+@keyframes ss-slide-up {
+    0%   { opacity: 0; transform: translateY(12px) translateZ(0); }
+    60%  { opacity: 1; transform: translateY(-2px) translateZ(0); }
+    100% { opacity: 1; transform: translateY(0)    translateZ(0); }
+}
+
+@keyframes ss-slide-down {
+    0%   { opacity: 0; transform: translateY(-8px) scale(0.95) translateZ(0); }
+    60%  { opacity: 1; transform: translateY(2px)  scale(1.01) translateZ(0); }
+    100% { opacity: 1; transform: translateY(0)    scale(1)    translateZ(0); }
+}
+
+@keyframes ss-sidebar-in {
+    0%   { opacity: 0; transform: translateX(-16px) translateZ(0); }
+    70%  { opacity: 1; transform: translateX(2px)   translateZ(0); }
+    100% { opacity: 1; transform: translateX(0)     translateZ(0); }
+}
+
+@keyframes ss-message-in {
+    0%   { opacity: 0; transform: translateY(8px) translateZ(0); }
+    100% { opacity: 1; transform: translateY(0)   translateZ(0); }
+}
+
+/* Context / right-click menus */
+.menu_c1e9c4,
+[class*='contextMenu'],
+[class*='context-menu'] {
+    animation: ss-spring-enter 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+    transform-origin: top left !important;
+}
+
+/* Popouts (user profiles, server info, etc.) */
+.popout__76f04,
+.outer_c0bea0,
+[class*='popout_'],
+[class*='Popout_'] {
+    animation: ss-spring-enter 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+    transform-origin: center top !important;
+}
+
+/* Modals & dialogs */
+[class*='modal_'],
+[class*='Modal_'],
+[class*='layerContainer_'] > [class*='layer_'] {
+    animation: ss-spring-enter 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+    transform-origin: center center !important;
+}
+
+/* Messages */
+.message__5126c {
+    animation: ss-message-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+/* Autocomplete (emoji / slash command / mention) */
+.autocomplete__6b0e0 {
+    animation: ss-slide-up 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+    transform-origin: bottom center !important;
+}
+
+/* Tooltips */
+.tooltip_c36707 {
+    animation: ss-slide-down 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+    transform-origin: top center !important;
+}
+
+/* Sidebar */
+.sidebarList__5e434 {
+    animation: ss-sidebar-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+.guilds__5e434 {
+    animation: ss-sidebar-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+/* New messages bar */
+.newMessagesBar__0f481 {
+    animation: ss-slide-down 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
 }
