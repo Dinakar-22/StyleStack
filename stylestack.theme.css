@@ -3,16 +3,15 @@
  * @author Dinakar
  * @version 1.2
  * @description Fixed build — StyleStack 
- *   - layout/panel/animation logic inlined directly. Works without
- *   - any external CDN dependency. Rem background + blur + Figtree.
- *
+ */
+ /*
  * FIXES :
  *   - Removed raw.githubusercontent.com @import (CORS-blocked in Discord)
  *   - Inlined all critical StyleStack panel separation logic
  *   - Fixed font load (Google Fonts @import preserved — works fine)
  *   - Background GIF now loads via inlined bg rule
  *   - Blur/transparency works without StyleStack @property infrastructure
- *   - Panel gaps, borders, border-radius all self-contained
+ *   - Panel gaps, borders, border-radius all self-contained 
  */
 
 /* ─── Font Import (Google Fonts — CORS-safe) ─────────────────────── */
