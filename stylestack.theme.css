@@ -1,148 +1,831 @@
 /**
- * @name StlyeStack
- * @description A modern dark theme for Discord with a focus on usability and customization.
- * @author refact0r
- * @version 2.1.1
- * @source 
-*/
+ * @name  StyleStack (Self-Contained Fixed Build)
+ * @author Dinakar
+ * @version 4.0
+ * @description Fixed build — StyleStack 
+ *   - layout/panel/animation logic inlined directly. Works without
+ *   - any external CDN dependency. Rem background + blur + Figtree.
+ *
+ * FIXES 
+ *   - Inlined all critical StyleStack panel separation logic
+ *   - Fixed font load (Google Fonts @import preserved — works fine)
+ *   - Background GIF now loads via inlined bg rule
+ *   - Blur/transparency works without StyleStack @property infrastructure
+ *   - Panel gaps, borders, border-radius all self-contained
+ */
 
-/* import theme modules */
-@import url('https://github.com/Dinakar-22/StyleStack/blob/main/stylestack.css');
+/* ─── Font Import (Google Fonts — CORS-safe) ─────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap');
 
-body {
-    /* font options */
-    --font: 'Caveat'; /* change to '' for default discord font */
-    --code-font: ''; /* change to '' for default discord font */
-    font-weight: 400; /* normal text font weight. DOES NOT AFFECT BOLD TEXT */
-
-    /* sizes */
-    --gap: 12px; /* spacing between panels */
-    --divider-thickness: 4px; /* thickness of unread messages divider and highlighted message borders */
-    --border-thickness: 1px; /* thickness of borders around main panels. DOES NOT AFFECT OTHER BORDERS */
-
-    /* animation/transition options */
-    --animations: on; /* off: disable animations/transitions, on: enable animations/transitions */
-    --list-item-transition: 0.2s ease; /* transition for list items */
-    --dms-icon-svg-transition: 0.4s ease; /* transition for the dms icon */
-    --border-hover-transition: 0.2s ease; /* transition for borders when hovered */
-
-    /* top bar options */
-    --top-bar-height: var(--gap); /* height of the top bar (discord default is 36px, old discord style is 24px, var(--gap) recommended if button position is set to titlebar) */
-    --top-bar-button-position: titlebar; /* off: default position, hide: hide buttons completely, serverlist: move inbox button to server list, titlebar: move inbox button to channel titlebar (will hide title) */
-    --top-bar-title-position: off; /* off: default centered position, hide: hide title completely, left: left align title (like old discord) */
-    --subtle-top-bar-title: off; /* off: default, on: hide the icon and use subtle text color (like old discord) */
-
-    /* window controls */
-    --custom-window-controls: on; /* off: default window controls, on: custom window controls */
-    --window-control-size: 14px; /* size of custom window controls */
-
-    /* dms button options */
-    --custom-dms-icon: custom; /* off: use default discord icon, hide: remove icon entirely, custom: use custom icon */
-    --dms-icon-svg-url: url('https://github.com/Dinakar-22/StyleStack/blob/main/assets/Rem.png'); /* icon svg url. MUST BE A SVG. */
-    --dms-icon-svg-size: 90%; /* size of the svg (css mask-size property) */
-    --dms-icon-color-before: var(--icon-secondary); /* normal icon color */
-    --dms-icon-color-after: var(--white); /* icon color when button is hovered/selected */
-    --custom-dms-background: off; /* off to disable, image to use a background image (must set url variable below), color to use a custom color/gradient */
-    --dms-background-image-url: url(''); /* url of the background image */
-    --dms-background-image-size: cover; /* size of the background image (css background-size property) */
-    --dms-background-color: linear-gradient(70deg, var(--blue-2), var(--purple-2), var(--red-2)); /* fixed color/gradient (css background property) */
-
-    /* background image options */
-    --background-image: on; /* off: no background image, on: enable background image (must set url variable below) */
-    --background-image-url: url('https://wallpaperwaifu.com/anime/rem-in-wedding-dress-rezero-live-wallpaper/'); /* url of the background image */
-
-    /* transparency/blur options */
-    /* NOTE: TO USE TRANSPARENCY/BLUR, YOU MUST HAVE TRANSPARENT BG COLORS. FOR EXAMPLE: --bg-4: hsla(220, 15%, 10%, 0.7); */
-    --transparency-tweaks: on; /* off: no changes, on: remove some elements for better transparency */
-    --remove-bg-layer: off; /* off: no changes, on: remove the base --bg-3 layer for use with window transparency (WILL OVERRIDE BACKGROUND IMAGE) */
-    --panel-blur: on; /* off: no changes, on: blur the background of panels */
-    --blur-amount: 12px; /* amount of blur */
-    --bg-floating: var(--bg-3); /* set this to a more opaque color if floating panels look too transparent. only applies if panel blur is on  */
-
-    /* chatbar options */
-    --custom-chatbar: aligned; /* off: default chatbar, aligned: chatbar aligned with the user panel, separated: chatbar separated from chat */
-    --chatbar-height: 47px; /* height of the chatbar (52px by default, 47px recommended for aligned, 56px recommended for separated) */
-    --chatbar-padding: 8px; /* padding of the chatbar. only applies in aligned mode. */
-
-    /* other options */
-    --small-user-panel: on; /* off: default user panel, on: smaller user panel like in old discord */
+/* ─── CSS Custom Property Registrations ──────────────────────────── */
+@property --animations {
+    syntax: '<custom-ident>';
+    inherits: true;
+    initial-value: on;
+}
+@property --background-image {
+    syntax: '<custom-ident>';
+    inherits: true;
+    initial-value: on;
+}
+@property --panel-blur {
+    syntax: '<custom-ident>';
+    inherits: true;
+    initial-value: on;
+}
+@property --transparency-tweaks {
+    syntax: '<custom-ident>';
+    inherits: true;
+    initial-value: on;
+}
+@property --small-user-panel {
+    syntax: '<custom-ident>';
+    inherits: true;
+    initial-value: on;
 }
 
-/* color options */
+/* ─── Color & Token Definitions (:root) ─────────────────────────── */
 :root {
-    --colors: on; /* off: discord default colors, on: midnight custom colors */
+    /* Text scale */
+    --text-1: hsl(220, 100%, 98%);
+    --text-2: hsl(220, 40%,  85%);
+    --text-3: hsl(220, 30%,  75%);
+    --text-4: hsl(220, 20%,  60%);
+    --text-5: hsl(220, 15%,  40%);
 
-    /* text colors */
-    --text-0: var(--bg-4); /* text on colored elements */
-    --text-1: hsl(220, 45%, 95%); /* other normally white text */
-    --text-2: hsl(220, 25%, 70%); /* headings and important text */
-    --text-3: hsl(220, 20%, 60%); /* normal text */
-    --text-4: hsl(220, 15%, 40%); /* icon buttons and channels */
-    --text-5: hsl(220, 15%, 25%); /* muted channels/chats and timestamps */
+    /* Background scale (semi-transparent for blur effect) */
+    --bg-1: hsla(220, 15%, 20%, 0.70);
+    --bg-2: hsla(220, 15%, 16%, 0.65);
+    --bg-3: hsla(220, 15%, 13%, 0.60);
+    --bg-4: hsla(220, 15%, 10%, 0.75);
 
-    /* background and dark colors */
-    --bg-1: hsla(220, 15%, 20%, 1); /* dark buttons when clicked */
-    --bg-2: hsla(220, 15%, 16%, 1); /* dark buttons */
-    --bg-3: hsla(220, 15%, 13%, 1); /* spacing, secondary elements */
-    --bg-4: hsla(220, 15%, 10%, 1); /* main background color */
-    --hover: hsla(221, 19%, 40%, 0.1); /* channels and buttons when hovered */
-    --active: hsla(220, 19%, 40%, 0.2); /* channels and buttons when clicked or selected */
-    --active-2: hsla(220, 19%, 40%, 0.3); /* extra state for transparent buttons */
-    --message-hover: hsla(220, 0%, 0%, 0.1); /* messages when hovered */
+    /* Floating panels */
+    --bg-floating: var(--bg-3);
 
-    /* accent colors */
-    --accent-1: var(--blue-1); /* links and other accent text */
-    --accent-2: var(--blue-2); /* small accent elements */
-    --accent-3: var(--blue-3); /* accent buttons */
-    --accent-4: var(--blue-4); /* accent buttons when hovered */
-    --accent-5: var(--blue-5); /* accent buttons when clicked */
-    --accent-new: var(--accent-2); /* stuff that's normally red like mute/deafen buttons */
-    --mention: linear-gradient(to right, color-mix(in hsl, var(--accent-2), transparent 90%) 40%, transparent); /* background of messages that mention you */
-    --mention-hover: linear-gradient(to right, color-mix(in hsl, var(--accent-2), transparent 95%) 40%, transparent); /* background of messages that mention you when hovered */
-    --reply: linear-gradient(to right, color-mix(in hsl, var(--text-3), transparent 90%) 40%, transparent); /* background of messages that reply to you */
-    --reply-hover: linear-gradient(to right, color-mix(in hsl, var(--text-3), transparent 95%) 40%, transparent); /* background of messages that reply to you when hovered */
+    /* Interaction states */
+    --hover:         hsla(220, 19%, 40%, 0.15);
+    --active:        hsla(220, 19%, 40%, 0.25);
+    --active-2:      hsla(220, 19%, 40%, 0.35);
+    --message-hover: hsla(220,  0%,  0%, 0.15);
 
-    /* status indicator colors */
-    --online: var(--green-2); /* change to #40a258 for default */
-    --dnd: var(--red-2); /* change to #d83a41 for default */
-    --idle: var(--yellow-2); /* change to #cc954c for default */
-    --streaming: var(--purple-2); /* change to ##9147ff for default */
-    --offline: var(--text-4); /* change to #82838b for default offline color */
+    /* Accent — blue scale */
+    --blue-1: hsl(215, 100%, 75%);
+    --blue-2: hsl(215,  90%, 65%);
+    --blue-3: hsl(215,  85%, 55%);
+    --blue-4: hsl(215,  80%, 50%);
+    --blue-5: hsl(215,  75%, 45%);
 
-    /* border colors */
-    --border-light: var(--hover); /* general light border color */
-    --border: var(--active); /* general normal border color */
-    --border-hover: var(--active); /* border color of panels when hovered */
-    --button-border: hsl(220, 0%, 100%, 0.1); /* neutral border color of buttons */
+    --accent-1: var(--blue-1);
+    --accent-2: var(--blue-2);
+    --accent-3: var(--blue-3);
+    --accent-4: var(--blue-4);
+    --accent-5: var(--blue-5);
 
-    /* base colors */
-    --red-1: oklch(75% 0.12 0);
-    --red-2: oklch(70% 0.12 0);
-    --red-3: oklch(65% 0.12 0);
-    --red-4: oklch(60% 0.12 0);
-    --red-5: oklch(55% 0.12 0);
+    /* Borders */
+    --border-light:  var(--hover);
+    --border:        var(--active);
+    --border-hover:  var(--active-2);
+    --button-border: hsla(0, 0%, 100%, 0.15);
 
-    --green-1: oklch(75% 0.11 170);
-    --green-2: oklch(70% 0.11 170);
-    --green-3: oklch(65% 0.11 170);
-    --green-4: oklch(60% 0.11 170);
-    --green-5: oklch(55% 0.11 160);
+    /* Highlights */
+    --mention:       hsla(215, 85%, 55%, 0.15);
+    --mention-hover: hsla(215, 85%, 55%, 0.25);
+    --reply:         hsla(220, 40%, 85%, 0.15);
+    --reply-hover:   hsla(220, 40%, 85%, 0.25);
 
-    --blue-1: oklch(75% 0.1 215);
-    --blue-2: oklch(70% 0.1 215);
-    --blue-3: oklch(65% 0.1 215);
-    --blue-4: oklch(60% 0.1 215);
-    --blue-5: oklch(55% 0.1 215);
+    /* Layout */
+    --gap:               12px;
+    --blur-amount:       6px;
+    --border-thickness:  1px;
+    --divider-thickness: 4px;
+    --radius-sm:         4px;
+    --radius-md:         8px;
+    --radius-lg:         16px;
 
-    --yellow-1: oklch(80% 0.11 90);
-    --yellow-2: oklch(75% 0.11 90);
-    --yellow-3: oklch(70% 0.11 90);
-    --yellow-4: oklch(65% 0.11 90);
-    --yellow-5: oklch(60% 0.11 90);
+    /* Transitions */
+    --border-hover-transition:    0.15s ease;
+    --list-item-transition:       0.2s  ease;
+    --dms-icon-svg-transition:    0.4s  ease;
 
-    --purple-1: oklch(75% 0.11 310);
-    --purple-2: oklch(70% 0.11 310);
-    --purple-3: oklch(65% 0.11 310);
-    --purple-4: oklch(60% 0.11 310);
-    --purple-5: oklch(55% 0.11 310);
+    /* DM Icon */
+    --dms-icon-svg-url:    url('https://raw.githubusercontent.com/Dinakar-22/StyleStack/refs/heads/main/assets/Rem.svg');
+    --dms-icon-svg-size:   85%;
+    --dms-icon-color-before: var(--text-4);
+    --dms-icon-color-after:  white;
+
+    /* Window controls */
+    --window-control-size: 14px;
+}
+
+/* ─── Body / Font Setup ──────────────────────────────────────────── */
+body,
+.theme-dark,
+.theme-light {
+    font-family: 'Figtree', 'gg sans', sans-serif !important;
+    font-weight: 400;
+
+    /* Map Discord's font variables to Figtree */
+    --font-primary:  'Figtree', 'gg sans', sans-serif;
+    --font-display:  'Figtree', 'gg sans', sans-serif;
+    --font-code:     'Fira Code', 'Consolas', monospace;
+
+    /* Discord color variable overrides */
+    --background-primary:         var(--bg-3);
+    --background-secondary:       var(--bg-4);
+    --background-secondary-alt:   var(--bg-4);
+    --background-tertiary:        var(--bg-4);
+    --background-accent:          var(--bg-2);
+    --background-floating:        var(--bg-floating);
+    --background-mobile-primary:  var(--bg-4);
+    --background-mobile-secondary:var(--bg-3);
+
+    --channeltextarea-background:     var(--bg-2);
+    --deprecated-card-bg:             var(--bg-3);
+    --deprecated-store-bg:            var(--bg-4);
+
+    --text-normal:   var(--text-3);
+    --text-muted:    var(--text-5);
+    --text-link:     var(--accent-1);
+    --header-primary:var(--text-2);
+    --header-secondary: var(--text-4);
+    --interactive-normal:  var(--text-4);
+    --interactive-hover:   var(--text-3);
+    --interactive-active:  var(--text-2);
+    --interactive-muted:   var(--text-5);
+
+    --brand-experiment:          var(--accent-3);
+    --brand-experiment-360:      var(--accent-2);
+    --brand-experiment-400:      var(--accent-2);
+    --brand-experiment-430:      var(--accent-2);
+    --brand-experiment-460:      var(--accent-3);
+    --brand-experiment-530:      var(--accent-4);
+    --brand-experiment-560:      var(--accent-5);
+    --brand-500:                 var(--accent-3);
+    --brand-560:                 var(--accent-4);
+
+    --channels-default: var(--text-4);
+    --channel-icon:     var(--text-4);
+
+    --scrollbar-thin-thumb:  hsla(220, 15%, 40%, 0.3);
+    --scrollbar-thin-track:  transparent;
+    --scrollbar-auto-thumb:  hsla(220, 15%, 40%, 0.3);
+    --scrollbar-auto-track:  transparent;
+
+    --focus-primary: var(--accent-2);
+}
+
+/* ─── App Root Transparency ──────────────────────────────────────── */
+#app-mount,
+.app__bd9e4,
+[class*="app_"] {
+    background: transparent !important;
+}
+
+/* ─── Background Image (Rem GIF) ────────────────────────────────── */
+/* Applied to the main Discord background layer */
+.bg__960e4,
+[class*="bg_"][class*="theme-"],
+[class^="bg_"] {
+    background-image: url('https://raw.githubusercontent.com/Dinakar-22/StyleStack/refs/heads/main/assets/Re_Zero%20Rem%20Live%20Wallpaper.gif') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+}
+
+/* ─── Shared Panel Mixin ─────────────────────────────────────────── */
+/* All major panels get: bg, border-radius, border, blur */
+.guilds__5e434,
+.sidebarList__5e434,
+.panels__5e434,
+.chatContent_f75fb0,
+.container_c8ffbb,
+.chat_f75fb0 > .subtitleContainer_f75fb0,
+.container__133bf > .container__9293f,
+.container_f391e3 > .container__9293f,
+.homeWrapper__0920e > .container__9293f,
+.container__01ae2 > .container__9293f,
+.container_fb64c9 > .container__9293f,
+.peopleColumn__133bf,
+.nowPlayingColumn__133bf,
+.mainPageScroller_ca1a02,
+.headerBar__1a9ce,
+.scroller__23746,
+.container_f391e3 > .content_f75fb0,
+.shop__6db1d,
+.content_f75fb0 > aside > .outer_c0bea0,
+.searchResultsWrap_a98f3b,
+.container_f369db,
+.chat_fb64c9,
+.container_a592e1,
+.callContainer_cb9592,
+.callContainer__722ff,
+.chat_f75fb0 > .header_c791b2,
+.chat_f75fb0 > .scrollerBase_d125d2,
+.chat_f75fb0 > .header__0b563,
+.chat_f75fb0 > .container__0b563,
+.container__89463 > .toolbar__89463,
+.container__89463 > .contentContainer__89463 {
+    background-color: var(--bg-3) !important;
+    border-radius: var(--radius-lg) !important;
+    border: var(--border-thickness) solid var(--border) !important;
+    backdrop-filter: blur(var(--blur-amount)) !important;
+    -webkit-backdrop-filter: blur(var(--blur-amount)) !important;
+    box-sizing: border-box;
+    transition: border-color var(--border-hover-transition);
+}
+
+.guilds__5e434:hover,
+.sidebarList__5e434:hover,
+.chatContent_f75fb0:hover,
+.container_c8ffbb:hover,
+.container__133bf > .container__9293f:hover,
+.peopleColumn__133bf:hover,
+.nowPlayingColumn__133bf:hover,
+.shop__6db1d:hover,
+.searchResultsWrap_a98f3b:hover,
+.container_a592e1:hover {
+    border-color: var(--border-hover) !important;
+}
+
+/* ─── Layout: Sidebar Group ──────────────────────────────────────── */
+.sidebar__5e434 {
+    margin: 0 var(--gap) var(--gap) var(--gap);
+}
+
+/* Server list */
+.guilds__5e434 {
+    margin-bottom: calc(var(--gap));
+    margin-right: var(--gap);
+}
+
+/* Channel list */
+.sidebarList__5e434 {
+    margin-bottom: var(--gap);
+}
+
+/* User panel — pinned to bottom */
+.panels__5e434 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+/* Remove bottom gradient/shadow from sidebar */
+.sidebar__5e434::after {
+    display: none !important;
+}
+
+/* Remove server list mask/shadow */
+.wrapper_ef3116 {
+    mask: none !important;
+}
+
+/* ─── Layout: Chat Area ──────────────────────────────────────────── */
+.chat_f75fb0 {
+    border: none !important;
+    background: none !important;
+}
+
+.chatContent_f75fb0 {
+    overflow: hidden;
+}
+
+/* Chat titlebar */
+.subtitleContainer_f75fb0 {
+    margin-bottom: var(--gap);
+}
+
+.title_f75fb0 {
+    border: none !important;
+    background: none !important;
+    margin-bottom: 0;
+}
+
+/* Friends page */
+.container__133bf,
+.page__5e434 {
+    padding-bottom: var(--gap);
+    padding-right: var(--gap);
+    border: none !important;
+    background: none !important;
+}
+
+.page__5e434 > .chat_f75fb0,
+.page__5e434 > .container__133bf {
+    padding: 0;
+}
+
+.tabBody__133bf {
+    border: none !important;
+    background: none !important;
+}
+
+/* Friends page titlebar */
+.container__9293f {
+    margin-bottom: var(--gap);
+}
+
+/* ─── Layout: Member List ────────────────────────────────────────── */
+.container_c8ffbb,
+.content_f75fb0 > .membersWrap_c8ffbb {
+    margin-left: var(--gap);
+    overflow: hidden;
+    height: auto;
+    min-width: fit-content;
+}
+
+.members_c8ffbb,
+.member_c8ffbb {
+    background: none !important;
+}
+
+/* ─── Layout: DM List ────────────────────────────────────────────── */
+.privateChannels_e6b769,
+.scroller__99e7c {
+    background: none !important;
+}
+
+.scroller__99e7c {
+    margin-bottom: 0;
+}
+
+/* ─── Layout: Active Now ─────────────────────────────────────────── */
+.nowPlayingColumn__133bf {
+    margin-left: var(--gap);
+}
+
+.container__7d20c {
+    background: none !important;
+}
+
+.scroller__7d20c {
+    border: none !important;
+}
+
+/* ─── Layout: Search Results ─────────────────────────────────────── */
+.searchResultsWrap_a98f3b {
+    margin-left: var(--gap);
+}
+
+/* ─── Layout: Member List (Forum) ────────────────────────────────── */
+.content_f75fb0 > .membersWrap_c8ffbb {
+    margin-left: var(--gap);
+}
+
+
+/* ─── Layout: VC ─────────────────────────────────────────────────── */
+.container__01ae2 {
+    border: none !important;
+    background: none !important;
+}
+
+.channelChatWrapper_cb9592 {
+    background: none !important;
+}
+
+.wrapper_cb9592 {
+    background: none !important;
+    margin-bottom: var(--gap);
+}
+
+.wrapper_cb9592.fullScreen_cb9592 {
+    margin-top: var(--gap);
+    margin-left: var(--gap);
+    width: calc(100% - var(--gap));
+    height: calc(100% - var(--gap));
+}
+
+.chat_a44415::before {
+    display: none !important;
+}
+
+/* ─── Layout: Server List Inner ──────────────────────────────────── */
+.scroller_ef3116 {
+    padding-top: 12px !important;
+    padding-bottom: 12px;
+}
+
+.folderGroup__48112,
+.listItem__650eb {
+    width: 100%;
+}
+
+.container__2637a {
+    padding-bottom: 0;
+}
+
+.clickable_f37cb1,
+.container__2637a,
+.header_f37cb1 {
+    background: none !important;
+}
+
+.scroller__629e4 {
+    margin-bottom: 0;
+}
+
+/* ─── Fix Server Banners ─────────────────────────────────────────── */
+.bannerImage_f37cb1,
+.bannerImg_f37cb1 {
+    width: 100%;
+}
+
+.bannerVisible_f37cb1 .headerEllipseBackdrop_f37cb1 {
+    display: none !important;
+}
+
+.headerGlass_f37cb1 {
+    top: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+
+/* ─── Settings Pages ─────────────────────────────────────────────── */
+.standardSidebarView__23e6b,
+.contentRegion__23e6b,
+.sidebarRegionScroller__23e6b,
+.contentRegionScroller__23e6b {
+    background: none !important;
+}
+
+.standardSidebarView__23e6b {
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+}
+
+/* ─── Chatbar ────────────────────────────────────────────────────── */
+.channelTextArea_f75fb0 {
+    border-radius: var(--radius-md);
+}
+
+.themedBackground__74017 {
+    background: none !important;
+}
+
+.slateTextArea_ec4baf {
+    margin-left: 2px;
+}
+
+.attachWrapper__0923f {
+    padding-top: 0;
+    padding-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon__4d3a9 {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.attachButton__74017 {
+    display: flex;
+    align-items: center;
+}
+
+/* ─── Unread Divider ─────────────────────────────────────────────── */
+.divider__908e2 {
+    border-width: var(--divider-thickness);
+    border-radius: var(--divider-thickness);
+}
+
+.endCap__908e2 {
+    margin-top: calc(var(--divider-thickness) / -2);
+}
+
+.divider__908e2 .content__908e2 {
+    margin-top: calc(var(--divider-thickness) - var(--divider-thickness) * 2);
+}
+
+
+/* ─── Messages ───────────────────────────────────────────────────── */
+.message__5126c {
+    border-radius: var(--radius-md);
+    margin-left: 4px;
+}
+
+/* Highlight left edge */
+.message__5126c.mentioned__5126c::before,
+.replying__5126c::before,
+.ephemeral__5126c::before {
+    width: var(--divider-thickness);
+    border-radius: var(--divider-thickness);
+    height: calc(100% - 2 * var(--radius-sm));
+    top: var(--radius-sm);
+    left: calc(var(--radius-sm) / 2);
+}
+
+/* Unread bar */
+.newMessagesBar__0f481 {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    border-radius: var(--radius-sm);
+    padding: 0 8px;
+}
+
+/* ─── Embeds ─────────────────────────────────────────────────────── */
+.embedFull__623de {
+    border-radius: var(--radius-md);
+    border: 4px solid var(--border);
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+}
+
+.hljs,
+.imageWrapper_af017a,
+.container__9271d {
+    border-radius: var(--radius-md);
+}
+
+.outer_c0bea0,
+.contentWrapper__08434 {
+    border-radius: var(--radius-lg);
+}
+
+.inner_c0bea0 {
+    border-radius: calc(var(--radius-lg) - 4px);
+}
+
+/* ─── Floating Elements (Tooltips, Menus, Popouts) ───────────────── */
+.tooltip_c36707,
+.menu_c1e9c4,
+.contentWrapper__08434,
+.autocomplete__6b0e0,
+.container__55c99,
+.messagesPopoutWrap_e8b59c,
+.popout__76f04,
+.popoverReactionHoverBar_f84418 {
+    background-color: var(--bg-floating) !important;
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+    border: var(--border-thickness) solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+/* ─── Profile Popout ─────────────────────────────────────────────── */
+.outer_c0bea0 {
+    border: var(--border-thickness) solid var(--border);
+    background-position: center;
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount));
+}
+
+.root__24502 {
+    background: none !important;
+}
+
+/* ─── Channel List Animations ────────────────────────────────────── */
+.wrapper__2ea32 .link__2ea32,
+.container__91a9d,
+.channel__972a0,
+.side_aa8da2 .item_aa8da2 {
+    transition: margin-left var(--list-item-transition);
+    will-change: margin-left;
+}
+
+.wrapper__2ea32:hover .link__2ea32,
+.side_aa8da2 .item_aa8da2:hover {
+    margin-left: 10px;
+}
+
+.container__91a9d:hover,
+.channel__972a0:hover {
+    margin-left: 18px;
+}
+
+/* Unread dot animation */
+.unread__2ea32 {
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    margin-left: -4px;
+    transition: var(--list-item-transition);
+    will-change: margin-left;
+}
+
+.wrapper__2ea32:hover .unread__2ea32 {
+    margin-left: 4px;
+}
+
+.typeThread__2ea32 .unread__2ea32 {
+    margin-left: -8px;
+}
+
+.wrapper__2ea32.typeThread__2ea32:hover .unread__2ea32 {
+    margin-left: 0;
+}
+
+
+/* ─── DM Button (Home Icon) ──────────────────────────────────────── */
+/* Hide the default Discord home SVG */
+.wrapper__6e9f8[data-list-item-id='guildsnav___home'] > .childWrapper__6e9f8 > svg {
+    display: none;
+}
+/*
+ * Use background-image instead of mask-image so the SVG renders
+ * with its own native colors (mask forces a flat single color).
+ * The ::before pseudo-element acts as a positioned image container.
+ */
+.wrapper__6e9f8[data-list-item-id='guildsnav___home'] > .childWrapper__6e9f8::before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: var(--dms-icon-svg-size);
+    height: var(--dms-icon-svg-size);
+    background-image: var(--dms-icon-svg-url);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform var(--dms-icon-svg-transition), opacity 0.15s ease;
+    opacity: 0.75;
+}
+
+/* Brighten + spin on hover/select */
+.wrapper__6e9f8[data-list-item-id='guildsnav___home']:hover > .childWrapper__6e9f8::before,
+.wrapper__6e9f8[data-list-item-id='guildsnav___home'].selected__6e9f8 > .childWrapper__6e9f8::before {
+    opacity: 1;
+    transform: rotate(-360deg) scale(0.88);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TOP BAR — Full 
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 1. Hide Discord's default title + help link */
+.title_c38106,
+.trailing_c38106 > a[href='https://support.discord.com'] {
+    display: none !important;
+}
+
+/* ── 2. Shrink the toolbar so search bar doesn't touch the pill ──── */
+/* toolbar__9293f is the top-right flex row: [icons][search bar][trailing] */
+.toolbar__9293f {
+    padding-right: 160px !important;
+}
+.navBarContent__88ef1,
+.headerBarContent__1a9ce,
+.headerBar__8a7fc {
+    padding-right: 160px !important;
+}
+
+/* ── 3. Float the trailing pill (inbox + dots) ───────────────────── */
+.trailing_c38106 {
+    position: fixed !important;
+    top: 5px !important;
+    right: 10px !important;
+    z-index: 99999 !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    height: 28px !important;
+    padding: 0 8px 0 6px !important;
+
+    background: hsla(220, 15%, 11%, 0.90) !important;
+    border: 1px solid hsla(220, 19%, 50%, 0.25) !important;
+    border-radius: 999px !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow: 0 2px 12px hsla(0, 0%, 0%, 0.4) !important;
+}
+
+/* ── 4. Inbox button ─────────────────────────────────────────────── */
+.trailing_c38106 > .button__85643,
+.recentsIcon_c99c29 .button__85643 {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 24px !important;
+    height: 24px !important;
+    padding: 0 !important;
+    background: none !important;
+    border-radius: 50% !important;
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: opacity 0.15s ease, background 0.15s ease;
+}
+.trailing_c38106 > .button__85643:hover {
+    background: hsla(220, 19%, 40%, 0.3) !important;
+    opacity: 1;
+}
+
+/* ── 5. Divider between inbox and dots ───────────────────────────── */
+.winButtons_c38106 {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 0 2px 0 6px !important;
+    margin: 0 !important;
+    height: 100% !important;
+    flex-shrink: 0 !important;
+    /* Left border acts as divider */
+    border-left: 1px solid hsla(220, 19%, 50%, 0.25) !important;
+}
+
+/* ── 6. Hide Discord's SVG icons from each button ────────────────── */
+.winButton_c38106 > svg,
+.winButton_c38106 > * {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* ── 7. Each button is just a click target ───────────────────────── */
+.winButton_c38106 {
+    position: relative !important;
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 14px !important;
+    height: 14px !important;
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+    border-radius: 50% !important;
+    /* The color goes directly ON the button, not ::after */
+    transition: filter 0.12s ease, transform 0.1s ease !important;
+}
+
+.winButton_c38106:hover  { filter: brightness(0.72) !important; }
+.winButton_c38106:active { transform: scale(0.82) !important; }
+
+/* ── 8. Color each button directly ───────────────────────────────── */
+/* ● RED — Close button */
+.winButtonClose_c38106 {
+    background-color: hsl(4, 82%, 57%) !important;
+}
+
+/* ● YELLOW — Minimize (1st of the MinMax buttons) */
+.winButtonMinMax_c38106:first-of-type {
+    background-color: hsl(42, 92%, 54%) !important;
+}
+
+/* ● GREEN — Maximize (last of the MinMax buttons) */
+/* Use every possible selector to guarantee it hits */
+.winButtonMinMax_c38106:last-of-type,
+.winButtonMinMax_c38106:last-child,
+.winButtonMinMax_c38106:nth-child(3),
+.winButtonMinMax_c38106 ~ .winButtonMinMax_c38106 {
+    background-color: hsl(134, 58%, 46%) !important;
+}
+
+/* ─── Transparency Tweaks ────────────────────────────────────────── */
+
+.children__9293f::after {
+    display: none !important;
+}
+
+.chatGradient__36d07 {
+    display: none !important;
+}
+
+.form_f75fb0 {
+    margin-top: 0;
+}
+
+/* Remove excess backgrounds */
+.wrapper_cdf8a9,
+.wrapper_cdf8a9 > .wrapper_fc8177 {
+    background: none !important;
+}
+
+.page__5e434 > .container__89463,
+.page__5e434 > .chat_f75fb0 {
+    background: none !important;
+}
+
+#vc-spotify-player {
+    background: none !important;
+}
+
+
+/* ─── Scrollbar Polish ───────────────────────────────────────────── */
+
+[class*='scroll'] {
+    will-change: scroll-position;
+    scrollbar-width: thin;
+    scrollbar-color: hsla(220, 15%, 40%, 0.3) transparent;
+}
+
+.burstGlow__23977 {
+    display: none !important;
+}
+
+
+/* ─── Small User Panel ───────────────────────────────────────────── */
+/* Positions user panel only over channel list, not full sidebar width */
+
+.panels__5e434 {
+    right: 0;
+    left: unset;
 }
