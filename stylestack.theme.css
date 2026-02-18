@@ -1,12 +1,13 @@
 /**
- * @name  StyleStack (Self-Contained Fixed Build)
+ * @name StyleStack (Self-Contained Fixed Build)
  * @author Dinakar
- * @version 4.0
+ * @version 1.2
  * @description Fixed build — StyleStack 
  *   - layout/panel/animation logic inlined directly. Works without
  *   - any external CDN dependency. Rem background + blur + Figtree.
  *
- * FIXES 
+ * FIXES :
+ *   - Removed raw.githubusercontent.com @import (CORS-blocked in Discord)
  *   - Inlined all critical StyleStack panel separation logic
  *   - Fixed font load (Google Fonts @import preserved — works fine)
  *   - Background GIF now loads via inlined bg rule
@@ -117,6 +118,7 @@
     --window-control-size: 14px;
 }
 
+
 /* ─── Body / Font Setup ──────────────────────────────────────────── */
 body,
 .theme-dark,
@@ -174,12 +176,14 @@ body,
     --focus-primary: var(--accent-2);
 }
 
+
 /* ─── App Root Transparency ──────────────────────────────────────── */
 #app-mount,
 .app__bd9e4,
 [class*="app_"] {
     background: transparent !important;
 }
+
 
 /* ─── Background Image (Rem GIF) ────────────────────────────────── */
 /* Applied to the main Discord background layer */
@@ -192,6 +196,7 @@ body,
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
 }
+
 
 /* ─── Shared Panel Mixin ─────────────────────────────────────────── */
 /* All major panels get: bg, border-radius, border, blur */
@@ -248,6 +253,7 @@ body,
     border-color: var(--border-hover) !important;
 }
 
+
 /* ─── Layout: Sidebar Group ──────────────────────────────────────── */
 .sidebar__5e434 {
     margin: 0 var(--gap) var(--gap) var(--gap);
@@ -281,6 +287,7 @@ body,
 .wrapper_ef3116 {
     mask: none !important;
 }
+
 
 /* ─── Layout: Chat Area ──────────────────────────────────────────── */
 .chat_f75fb0 {
@@ -374,7 +381,6 @@ body,
     margin-left: var(--gap);
 }
 
-
 /* ─── Layout: VC ─────────────────────────────────────────────────── */
 .container__01ae2 {
     border: none !important;
@@ -444,7 +450,6 @@ body,
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
-
 /* ─── Settings Pages ─────────────────────────────────────────────── */
 .standardSidebarView__23e6b,
 .contentRegion__23e6b,
@@ -457,6 +462,7 @@ body,
     backdrop-filter: blur(var(--blur-amount));
     -webkit-backdrop-filter: blur(var(--blur-amount));
 }
+
 
 /* ─── Chatbar ────────────────────────────────────────────────────── */
 .channelTextArea_f75fb0 {
@@ -502,7 +508,6 @@ body,
 .divider__908e2 .content__908e2 {
     margin-top: calc(var(--divider-thickness) - var(--divider-thickness) * 2);
 }
-
 
 /* ─── Messages ───────────────────────────────────────────────────── */
 .message__5126c {
@@ -554,6 +559,7 @@ body,
     border-radius: calc(var(--radius-lg) - 4px);
 }
 
+
 /* ─── Floating Elements (Tooltips, Menus, Popouts) ───────────────── */
 .tooltip_c36707,
 .menu_c1e9c4,
@@ -570,6 +576,7 @@ body,
     border-radius: var(--radius-md);
 }
 
+
 /* ─── Profile Popout ─────────────────────────────────────────────── */
 .outer_c0bea0 {
     border: var(--border-thickness) solid var(--border);
@@ -581,6 +588,7 @@ body,
 .root__24502 {
     background: none !important;
 }
+
 
 /* ─── Channel List Animations ────────────────────────────────────── */
 .wrapper__2ea32 .link__2ea32,
@@ -629,6 +637,7 @@ body,
 .wrapper__6e9f8[data-list-item-id='guildsnav___home'] > .childWrapper__6e9f8 > svg {
     display: none;
 }
+
 /*
  * Use background-image instead of mask-image so the SVG renders
  * with its own native colors (mask forces a flat single color).
@@ -656,7 +665,7 @@ body,
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   TOP BAR — Full 
+   TOP BAR — Full rewrite
    ═══════════════════════════════════════════════════════════════════ */
 
 /* 1. Hide Discord's default title + help link */
@@ -668,19 +677,19 @@ body,
 /* ── 2. Shrink the toolbar so search bar doesn't touch the pill ──── */
 /* toolbar__9293f is the top-right flex row: [icons][search bar][trailing] */
 .toolbar__9293f {
-    padding-right: 160px !important;
+    padding-right: 150px !important;
 }
 .navBarContent__88ef1,
 .headerBarContent__1a9ce,
 .headerBar__8a7fc {
-    padding-right: 160px !important;
+    padding-right: 150px !important;
 }
 
 /* ── 3. Float the trailing pill (inbox + dots) ───────────────────── */
 .trailing_c38106 {
     position: fixed !important;
-    top: 5px !important;
-    right: 10px !important;
+    top: 42px !important;   /* sit just below the native titlebar strip */
+    right: 22px !important;
     z-index: 99999 !important;
 
     display: flex !important;
@@ -752,35 +761,76 @@ body,
     flex-shrink: 0 !important;
     cursor: pointer !important;
     border-radius: 50% !important;
-    /* The color goes directly ON the button, not ::after */
-    transition: filter 0.12s ease, transform 0.1s ease !important;
 }
 
-.winButton_c38106:hover  { filter: brightness(0.72) !important; }
-.winButton_c38106:active { transform: scale(0.82) !important; }
+/* ── 8. Color each button + hover effects ────────────────────────── */
+/* Base dot state — slightly desaturated at rest, pops on hover */
+.winButton_c38106 {
+    position: relative !important;
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 14px !important;
+    height: 14px !important;
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+    border-radius: 50% !important;
+    transition:
+        transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+        filter 0.15s ease,
+        box-shadow 0.15s ease !important;
+    filter: brightness(0.85) saturate(0.8) !important;
+}
 
-/* ── 8. Color each button directly ───────────────────────────────── */
-/* ● RED — Close button */
+/* Hover: pop scale + full color + glow */
+.winButton_c38106:hover {
+    transform: scale(1.25) !important;
+    filter: brightness(1.1) saturate(1.3) !important;
+}
+
+/* Click: squish */
+.winButton_c38106:active {
+    transform: scale(0.82) !important;
+    filter: brightness(0.7) !important;
+    transition: transform 0.08s ease !important;
+}
+
+/* ● RED — Close */
 .winButtonClose_c38106 {
     background-color: hsl(4, 82%, 57%) !important;
+    box-shadow: 0 0 0 0 hsla(4, 82%, 57%, 0) !important;
+}
+.winButtonClose_c38106:hover {
+    box-shadow: 0 0 8px 2px hsla(4, 82%, 57%, 0.6) !important;
 }
 
-/* ● YELLOW — Minimize (1st of the MinMax buttons) */
+/* ● YELLOW — Minimize */
 .winButtonMinMax_c38106:first-of-type {
     background-color: hsl(42, 92%, 54%) !important;
+    box-shadow: 0 0 0 0 hsla(42, 92%, 54%, 0) !important;
+}
+.winButtonMinMax_c38106:first-of-type:hover {
+    box-shadow: 0 0 8px 2px hsla(42, 92%, 54%, 0.6) !important;
 }
 
-/* ● GREEN — Maximize (last of the MinMax buttons) */
-/* Use every possible selector to guarantee it hits */
+/* ● GREEN — Maximize (all selectors to guarantee a hit) */
 .winButtonMinMax_c38106:last-of-type,
 .winButtonMinMax_c38106:last-child,
 .winButtonMinMax_c38106:nth-child(3),
 .winButtonMinMax_c38106 ~ .winButtonMinMax_c38106 {
     background-color: hsl(134, 58%, 46%) !important;
+    box-shadow: 0 0 0 0 hsla(134, 58%, 46%, 0) !important;
+}
+.winButtonMinMax_c38106:last-of-type:hover,
+.winButtonMinMax_c38106:last-child:hover,
+.winButtonMinMax_c38106:nth-child(3):hover,
+.winButtonMinMax_c38106 ~ .winButtonMinMax_c38106:hover {
+    box-shadow: 0 0 8px 2px hsla(134, 58%, 46%, 0.6) !important;
 }
 
 /* ─── Transparency Tweaks ────────────────────────────────────────── */
-
 .children__9293f::after {
     display: none !important;
 }
@@ -808,9 +858,7 @@ body,
     background: none !important;
 }
 
-
 /* ─── Scrollbar Polish ───────────────────────────────────────────── */
-
 [class*='scroll'] {
     will-change: scroll-position;
     scrollbar-width: thin;
@@ -821,10 +869,8 @@ body,
     display: none !important;
 }
 
-
 /* ─── Small User Panel ───────────────────────────────────────────── */
 /* Positions user panel only over channel list, not full sidebar width */
-
 .panels__5e434 {
     right: 0;
     left: unset;
