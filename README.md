@@ -9,17 +9,6 @@ Works with **Vencord**, **BetterDiscord** and any client that loads `.theme.css`
 
 ![StyleStack overview](assets/screenshots/overview.png)
 
----
-
-## Screenshots
-
-| | | |
-| --- | --- | --- |
-| ![Active server ring](assets/screenshots/server-ring.png) | ![Speaking glow](assets/screenshots/voice-speaking.png) | ![Profile card](assets/screenshots/profile.png) |
-| **Active server ring**: a slowly rotating blue gradient border | **Speaking glow**: a soft pulsing ring on whoever is talking | **Profile card**: blue-tinted banner and a glass body |
-
----
-
 ## Install
 
 **Vencord (online, auto-updates)**
@@ -230,7 +219,7 @@ Your client may be auto-updating the theme from `@updateUrl`. Remove that line f
 
 ## Community
 
-Questions, bug reports or screenshots of your setup are welcome in the Team SNC Discord: https://discord.gg/YOUR_INVITE_CODE
+Questions, bug reports or screenshots of your setup are welcome in the Team SNC Discord: https://discord.gg/RjXukhYxcK
 
 ---
 
