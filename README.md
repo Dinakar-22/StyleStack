@@ -1,11 +1,24 @@
 # StyleStack
 
 A blue glass theme for Discord with an animated Re:Zero Rem background.
-Semi-transparent blurred panels, glowing blue borders, smooth spring animations, and one blue box style for every tag and badge.
+Semi-transparent blurred panels, glowing blue borders, smooth spring animations, glass popups, a rotating ring on the active server and a soft glow on whoever is speaking in voice.
 
 Works with **Vencord**, **BetterDiscord** and any client that loads `.theme.css` files.
 
 > Still under development. Expect small changes between versions.
+
+![StyleStack overview](assets/screenshots/overview.png)
+
+---
+
+## Screenshots
+
+| | |
+| --- | --- |
+| ![Glass popups](assets/screenshots/popups.png) | ![Active server ring](assets/screenshots/server-ring.png) |
+| **Glass popups** — context menus, emoji picker, modals and Settings | **Active server ring** — a slowly rotating blue gradient border |
+| ![Speaking glow](assets/screenshots/voice-speaking.png) | ![Profile card](assets/screenshots/profile.png) |
+| **Speaking glow** — a soft pulsing ring on whoever is talking | **Profile card** — blue-tinted banner and a glass body |
 
 ---
 
@@ -19,6 +32,8 @@ Works with **Vencord**, **BetterDiscord** and any client that loads `.theme.css`
 ```
 https://raw.githubusercontent.com/Dinakar-22/StyleStack/refs/heads/main/stylestack.theme.css
 ```
+
+The theme header also carries an `@updateUrl` pointing at the same file, so clients that support it can check for new versions. Bump `@version` in the header when you publish a change.
 
 **Vencord / BetterDiscord (local file)**
 
@@ -103,6 +118,10 @@ All of these are in `:root`:
 | Glow colors | `--glow-blue`, `--glow-hi` |
 | Shape and spacing | `--gap`, `--radius-sm`, `--radius-md`, `--radius-lg`, `--border-thickness` |
 | Server list home icon | `--dms-icon-svg-url` (must be an SVG link) |
+| Active server ring speed | `--ring-speed` (seconds per turn, default `7s`) |
+| Speaking glow speed | `--speak-speed` (seconds per pulse, default `1.4s`) |
+| Handwritten header font | `--font-rem` (default Caveat) |
+| Cursor | Add `rem-cursor.png` (normal) and `rem-cursor-pointer.png` (over links and buttons) to `assets/`, 32x32 PNG with a transparent background. The theme loads them automatically and falls back to a blue arrow if they are missing. To use other links, edit `--cursor-default` and `--cursor-pointer` (the two numbers after `url()` are the click point) |
 
 ### Tags, badges and mentions
 
@@ -119,7 +138,7 @@ Edit those rules to change the fill, border or glow, or delete the `.mention` ru
 
 The theme uses Figtree from Google Fonts. To change it, replace the font name in the `@import` line at the top, then replace `'Figtree'` in the body font rule and in `--font-primary` and `--font-display`.
 
-`assets/Caveat-VariableFont_wght.ttf` is bundled in this repo but is not used by the theme yet.
+Caveat (from Google Fonts) is used for the server name and channel headers. To use another font there, change `--font-rem` and the second `@import` line. `assets/Caveat-VariableFont_wght.ttf` is bundled in this repo as a local copy.
 
 ### Status colors
 
@@ -157,13 +176,19 @@ Inspect it with `Ctrl+Shift+I` and add its class name to the tag rule at the end
 
 ---
 
+## Community
+
+Questions, bug reports or screenshots of your setup are welcome in the Team SNC Discord: https://discord.gg/YOUR_INVITE_CODE
+
+---
+
 ## Credits
 
 - Created by **gvt22**, **Team SNC**.
 - The idea came from **refact0r**'s themes, especially [Midnight](https://github.com/refact0r/midnight-discord). Special thanks for the inspiration. Midnight is MIT licensed, so please keep its notice if you reuse any of its code.
-- Fonts: Figtree (loaded from Google Fonts) and Caveat (bundled in `assets/`, not used yet), both open source.
+- Fonts: Figtree (loaded from Google Fonts) and Caveat (loaded from Google Fonts, copy bundled in `assets/`), both open source.
 - Wallpaper: an animated Rem (Re:Zero) live wallpaper. The original artist is unknown. If you made it or know who did, please open an issue so they can be credited, or so it can be removed.
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+MIT, copyright (c) 2026 gvt22 (Team SNC). See [LICENSE](LICENSE).
