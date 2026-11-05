@@ -168,7 +168,7 @@
        --collapsible-members  member list shrinks to avatars, expands on hover
        --compact-mode         smaller gaps, corners and message spacing
        --readability-mode     brighter text + darker panels + darker wallpaper */
-    --collapsible-members: on;
+    --collapsible-members: off;
     --compact-mode:        on;
     --readability-mode:    off;
 
@@ -1801,8 +1801,8 @@ a:hover {
 
 /* ═══════════════════════════════════════════════════════════════════
    VISUAL POLISH
-   1. Glass popups   2. Active server ring   3. Speaking glow
-   4. Profile card   5. Rem touches (Caveat, cursor, loading screen)
+   1. Active server ring   2. Speaking glow
+   3. Profile card   4. Rem touches (Caveat, cursor, loading screen)
 
    Selectors use [class*='name_'] wherever possible so they survive
    Discord updates. If one stops matching, inspect it with Ctrl+Shift+I.
@@ -1812,52 +1812,6 @@ a:hover {
     syntax: '<angle>';
     inherits: false;
     initial-value: 0deg;
-}
-
-/* ─── 1. Glass for the other popups ──────────────────────────────────
-   Context menus, emoji / expression picker, modals, settings window. */
-[role='menu'],
-[class*='emojiPicker_'],
-[class*='expressionPickerChatInputSizeOverride_'],
-[role='dialog']:not([class*='standardSidebarView_']) {
-    background-color: var(--bg-floating) !important;
-    backdrop-filter: var(--panel-backdrop) !important;
-    -webkit-backdrop-filter: var(--panel-backdrop) !important;
-    border: var(--border-thickness) solid var(--border) !important;
-    border-radius: var(--radius-lg) !important;
-    box-shadow: var(--panel-shadow-hover) !important;
-}
-
-/* Context menu rows pick up the theme hover instead of Discord's brand fill */
-[role='menu'] [role='menuitem']:hover,
-[role='menu'] [role='menuitem'][class*='focused_'] {
-    background: var(--active) !important;
-}
-
-/* Modal footers / emoji picker headers: slightly darker strip on the glass */
-[role='dialog'] [class*='footer_'],
-[class*='emojiPicker_'] [class*='header_'] {
-    background-color: var(--bg-4) !important;
-}
-
-/* Soft blur behind the dark overlay that sits under modals */
-[class*='backdrop_'][class*='withLayer'],
-[class*='backdrop_'] {
-    backdrop-filter: blur(calc(var(--blur-amount) / 2));
-    -webkit-backdrop-filter: blur(calc(var(--blur-amount) / 2));
-}
-
-/* Settings window: same panel look as the main UI */
-[class*='standardSidebarView_'] {
-    background-color: var(--bg-3) !important;
-    border: var(--border-thickness) solid var(--border) !important;
-    border-radius: var(--radius-lg) !important;
-    box-shadow: var(--panel-shadow) !important;
-    overflow: hidden;
-}
-
-[class*='standardSidebarView_'] [class*='sidebarRegion_'] {
-    background-color: var(--bg-4) !important;
 }
 
 /* ─── 2. Animated ring on the active server icon ─────────────────────
@@ -2039,13 +1993,8 @@ button,
     text-shadow: 0 0 10px var(--glow-blue);
 }
 
-/* ─── Presets: no blur on the new popups in solid / minimal ──────── */
+/* ─── Presets: no blur on the profile card in solid / minimal ────── */
 @container style(--style-preset: solid) or style(--style-preset: minimal) {
-    [role='menu'],
-    [class*='emojiPicker_'],
-    [class*='expressionPickerChatInputSizeOverride_'],
-    [role='dialog'],
-    [class*='backdrop_'],
     [class*='userProfileInner'],
     [class*='userProfileModalInner_'],
     .inner_c0bea0 {
