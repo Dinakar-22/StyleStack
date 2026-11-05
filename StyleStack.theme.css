@@ -1816,20 +1816,29 @@ a:hover {
 
 /* ─── 2. Animated ring on the active server icon ─────────────────────
    A slowly rotating gradient border drawn on ::after (the ::before of the
-   Home button is already used by the Rem icon). */
-.wrapper__6e9f8.selected__6e9f8 > [class*='childWrapper_'],
-[class*='wrapper_'][class*='selected_'] > [class*='childWrapper_'] {
+   Home button is already used by the Rem icon).
+   The selected server is found three ways, so the ring survives Discord
+   renaming classes: the "selected" class, any ancestor with a "selected"
+   class, or the white pill (40px tall) that Discord shows next to it. */
+[data-list-item-id^='guildsnav___'][class*='selected_'] > [class*='childWrapper_'],
+[class*='wrapper_'][class*='selected_'] > [class*='childWrapper_'],
+[class*='listItem_']:has([class*='selected_']) [class*='childWrapper_'],
+[class*='listItem_']:has([class*='pill_'] [style*='height: 40px']) [class*='childWrapper_'] {
     position: relative !important;
     overflow: visible !important;
 }
 
-.wrapper__6e9f8.selected__6e9f8 > [class*='childWrapper_']::after,
-[class*='wrapper_'][class*='selected_'] > [class*='childWrapper_']::after {
+[data-list-item-id^='guildsnav___'][class*='selected_'] > [class*='childWrapper_']::after,
+[class*='wrapper_'][class*='selected_'] > [class*='childWrapper_']::after,
+[class*='listItem_']:has([class*='selected_']) [class*='childWrapper_']::after,
+[class*='listItem_']:has([class*='pill_'] [style*='height: 40px']) [class*='childWrapper_']::after {
     content: '' !important;
+    display: block !important;
     position: absolute !important;
     inset: -4px !important;
     padding: 2px !important;
-    border-radius: inherit !important;
+    box-sizing: border-box !important;
+    border-radius: 18px !important;
     background: conic-gradient(
         from var(--ring-angle),
         hsl(var(--hue), 100%, 62%),
@@ -1848,15 +1857,21 @@ a:hover {
     mask-composite: exclude;
     filter: drop-shadow(0 0 4px var(--glow-blue));
     pointer-events: none !important;
+    z-index: 5 !important;
     animation: ss-ring-spin var(--ring-speed) linear infinite !important;
 }
 
+/* The Home button already draws the Rem icon on ::before, so ::after is free */
+
 @keyframes ss-ring-spin {
-    to { --ring-angle: 360deg; }
+    from { --ring-angle: 0deg; }
+    to   { --ring-angle: 360deg; }
 }
 
 /* ─── 3. Speaking glow in voice channels ─────────────────────────────
-   Soft pulsing ring on whoever is talking (sidebar avatars + call tiles). */
+   Soft pulsing ring on whoever is talking (sidebar avatars + call tiles).
+   Matches any class containing "speaking" (any capitalisation) on an
+   avatar, tile or wrapper, so small Discord renames do not break it. */
 @keyframes ss-speak-pulse {
     0%, 100% {
         box-shadow: 0 0 0 2px hsla(var(--hue), 100%, 62%, 0.85),
@@ -1868,9 +1883,12 @@ a:hover {
     }
 }
 
-[class*='avatarSpeaking_'],
-[class*='tile_'][class*='speaking_'],
-[class*='speaking_'][class*='voiceAvatar'] {
+[class*='avatar'][class*='speaking' i]:not([class*='notSpeaking' i]),
+[class*='avatarSpeaking'],
+[class*='tile'][class*='speaking' i]:not([class*='notSpeaking' i]),
+[class*='voiceAvatar'][class*='speaking' i],
+[class*='wrapperSpeaking'],
+[class*='speaking_']:not([class*='notSpeaking' i]):not(:has(*)) {
     animation: ss-speak-pulse var(--speak-speed) ease-in-out infinite !important;
     border-color: transparent !important;
 }
@@ -2003,10 +2021,15 @@ button,
     }
 }
 
-/* Calm the new motion for "reduce motion" users */
+/* Calm the new motion for "reduce motion" users (static glow stays visible) */
 @media (prefers-reduced-motion: reduce) {
-    [class*='avatarSpeaking_'],
-    [class*='tile_'][class*='speaking_'],
+    [class*='avatar'][class*='speaking' i],
+    [class*='tile'][class*='speaking' i],
+    [class*='avatarSpeaking'] {
+        animation: none !important;
+        box-shadow: 0 0 0 2px hsla(var(--hue), 100%, 62%, 0.85),
+                    0 0 8px 2px hsla(var(--hue), 100%, 62%, 0.35) !important;
+    }
     [class*='loadingScreen']::before,
     [class*='appLoading']::before {
         animation: none !important;
