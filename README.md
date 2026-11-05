@@ -7,7 +7,7 @@ Works with **Vencord**, **BetterDiscord** and any client that loads `.theme.css`
 
 > Still under development. Expect small changes between versions. Current version: **1.3**
 
-![StyleStack overview](assets/screenshots/overview.png)
+![StyleStack overview](assets/screenshots/StyleStack-overview.png)
 
 ## Install
 
