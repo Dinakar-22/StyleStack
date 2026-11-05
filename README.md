@@ -1,7 +1,7 @@
-# StyleStack Neon
+# StyleStack
 
-A dark neon glass theme for Discord, built around a Rem (Re:Zero) wallpaper.
-Blacked-out panels, glowing blue borders, blurred glass, and one blue box style for every tag and badge.
+A blue glass theme for Discord with an animated Re:Zero Rem background.
+Semi-transparent blurred panels, glowing blue borders, smooth spring animations, and one blue box style for every tag and badge.
 
 Works with **Vencord**, **BetterDiscord** and any client that loads `.theme.css` files.
 
@@ -54,7 +54,7 @@ The wallpaper is one variable near the top of `:root` in `stylestack.theme.css`:
 | Darker or brighter wallpaper | Change `--dim-top` and `--dim-bottom` (0 = no dim, 1 = black) |
 | More or less glass blur | Change `--blur-amount` (default `8px`, `0px` looks flat) |
 
-Image advice: around 1920x1080, JPG or WebP, ideally under 5 MB. Dark or medium images look best with neon colors. Links to your own PC (`file://`) usually do not load in Discord, and Discord CDN links expire, so host the image on GitHub.
+Image advice: around 1920x1080, JPG or WebP, ideally under 5 MB. Dark or medium images look best. Links to your own PC (`file://`) usually do not load in Discord, and Discord CDN links expire, so host the image on GitHub.
 
 **Shrink a GIF to animated WebP** (needs ffmpeg):
 
@@ -71,7 +71,7 @@ ffmpeg -i input.gif -vf "fps=12" -c:v libwebp_anim -quality 60 -loop 0 output.we
 At the top of `:root` there are color knobs. Change the numbers and the whole theme follows (borders, glows, scrollbars, selection, tags, badges, mentions, buttons).
 
 ```css
---hue:     198;   /* main neon color, 0-360 */
+--hue:     198;   /* main accent color, 0-360 */
 --hue-hi:  192;   /* lighter highlight on hover, keep near --hue */
 --hue-2:   207;   /* second shade for gradients, keep near --hue */
 --hue-bg:  255;   /* tint of the dark panels */
@@ -79,7 +79,7 @@ At the top of `:root` there are color knobs. Change the numbers and the whole th
 
 | Look | `--hue` | `--hue-hi` | `--hue-2` |
 | --- | --- | --- | --- |
-| Neon blue (default) | 198 | 192 | 207 |
+| Blue (default) | 198 | 192 | 207 |
 | Pink | 330 | 325 | 340 |
 | Purple | 280 | 275 | 290 |
 | Green | 150 | 145 | 160 |
@@ -116,6 +116,8 @@ Edit those two rules to change the fill, border, corner radius or glow.
 ### Font
 
 The theme uses Figtree from Google Fonts. To change it, replace the font name in the `@import` line at the top, then replace `'Figtree'` in the body font rule and in `--font-primary` and `--font-display`.
+
+`assets/Caveat-VariableFont_wght.ttf` is bundled in this repo but is not used by the theme yet.
 
 ### Status colors
 
@@ -154,8 +156,8 @@ Inspect it with `Ctrl+Shift+I` and add its class name to the tag rule at the end
 
 - Created by **gvt22**, **Team SNC**.
 - The idea came from **refact0r**'s themes, especially [Midnight](https://github.com/refact0r/midnight-discord). Special thanks for the inspiration. Midnight is MIT licensed, so please keep its notice if you reuse any of its code.
-- Font: Figtree, open source via Google Fonts.
-- The Rem wallpaper artwork belongs to its original artist and the Re:Zero rights holders. It is not owned by this project, so swap it for your own before redistributing.
+- Fonts: Figtree (loaded from Google Fonts) and Caveat (bundled in `assets/`, not used yet), both open source.
+- Wallpaper: an animated Rem (Re:Zero) live wallpaper. The original artist is unknown. If you made it or know who did, please open an issue so they can be credited, or so it can be removed.
 
 ## License
 
