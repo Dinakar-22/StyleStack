@@ -1,9 +1,11 @@
 # StyleStack
 
 A blue glass theme for Discord with an animated Re:Zero Rem background.
-Semi-transparent blurred panels, glowing blue borders, smooth spring animations, glass popups, a rotating ring on the active server and a soft glow on whoever is speaking in voice.
+Semi-transparent blurred panels, glowing blue borders, smooth spring animations, a rotating ring on the active server and a soft glow on whoever is speaking in voice.
 
 Works with **Vencord**, **BetterDiscord** and any client that loads `.theme.css` files.
+
+> Still under development. Expect small changes between versions. Current version: **1.3**
 
 ![StyleStack overview](assets/screenshots/overview.png)
 
@@ -11,12 +13,10 @@ Works with **Vencord**, **BetterDiscord** and any client that loads `.theme.css`
 
 ## Screenshots
 
-| | |
-| --- | --- |
-| ![Glass popups](assets/screenshots/popups.png) | ![Active server ring](assets/screenshots/server-ring.png) |
-| **Glass popups** — context menus, emoji picker, modals and Settings | **Active server ring** — a slowly rotating blue gradient border |
-| ![Speaking glow](assets/screenshots/voice-speaking.png) | ![Profile card](assets/screenshots/profile.png) |
-| **Speaking glow** — a soft pulsing ring on whoever is talking | **Profile card** — blue-tinted banner and a glass body |
+| | | |
+| --- | --- | --- |
+| ![Active server ring](assets/screenshots/server-ring.png) | ![Speaking glow](assets/screenshots/voice-speaking.png) | ![Profile card](assets/screenshots/profile.png) |
+| **Active server ring**: a slowly rotating blue gradient border | **Speaking glow**: a soft pulsing ring on whoever is talking | **Profile card**: blue-tinted banner and a glass body |
 
 ---
 
@@ -31,15 +31,49 @@ Works with **Vencord**, **BetterDiscord** and any client that loads `.theme.css`
 https://raw.githubusercontent.com/Dinakar-22/StyleStack/refs/heads/main/stylestack.theme.css
 ```
 
-The theme header also carries an `@updateUrl` pointing at the same file, so clients that support it can check for new versions. Bump `@version` in the header when you publish a change.
+The theme header also carries an `@updateUrl` pointing at the same file, so clients that support it can check for new versions. Bump `@version` in the header when you publish a change. If you edit a local copy and your changes disappear, remove the `@updateUrl` line.
 
 **Vencord / BetterDiscord (local file)**
 
-1. Download `stylestack.theme.css`.
+1. Download `stylestack.theme.css`. The file name must end in `.theme.css`, or the client will not list it.
 2. Open Settings, Vencord (or BetterDiscord), Themes, then **Open Themes Folder**.
 3. Drop the file in, then enable it in the Themes list.
 
-The wallpaper files live in the `assets/` folder of this repo. Keep `rem-wallpaper.webp` and `rem-wallpaper-static.jpg` there, because the theme loads them from GitHub.
+The wallpaper files live in the `assets/` folder of this repo. Keep `rem-wallpaper.webp`, `rem-wallpaper-static.jpg` and `Rem.svg` there, because the theme loads them from GitHub.
+
+---
+
+## Options
+
+All options are near the top of `:root` in `stylestack.theme.css`.
+
+### Style preset
+
+```css
+--style-preset: glass;   /* glass | solid | minimal */
+```
+
+| Preset | Look |
+| --- | --- |
+| `glass` | Default. Wallpaper, frosted blur, glowing borders, top-edge shine |
+| `solid` | No wallpaper, no blur, plain opaque panels. Lightest on the GPU |
+| `minimal` | Keeps the wallpaper but uses flat panels: no blur, glow or shine |
+
+### Usability switches
+
+Each one is set to `on` or `off`:
+
+```css
+--collapsible-members: on;
+--compact-mode:        on;
+--readability-mode:    off;
+```
+
+| Switch | What it does |
+| --- | --- |
+| `--collapsible-members` | The member list shrinks to avatars and expands when you hover it. Widths are set with `--member-collapsed-width` (72px) and `--member-expanded-width` (240px). The chat area resizes as the list expands |
+| `--compact-mode` | Smaller gaps, corners and message spacing |
+| `--readability-mode` | Brighter text, darker panels, a darker wallpaper overlay and a soft shadow behind message text. Use it if the wallpaper makes text hard to read |
 
 ---
 
@@ -63,7 +97,7 @@ The wallpaper is one variable near the top of `:root` in `stylestack.theme.css`:
 | --- | --- |
 | Smooth performance | Use the static `.jpg` line instead of the animated `.webp` (swap the commented line in `:root`) |
 | Animated wallpaper | `.webp` or `.gif` both work. WebP is about 4x smaller, so prefer it |
-| No wallpaper, just dark panels | `--wallpaper: none;` |
+| No wallpaper, just dark panels | Set `--style-preset: solid;` |
 | Darker or brighter wallpaper | Change `--dim-top` and `--dim-bottom` (0 = no dim, 1 = black) |
 | More or less glass blur | Change `--blur-amount` (default `8px`, `0px` looks flat) |
 
@@ -81,7 +115,7 @@ ffmpeg -i input.gif -vf "fps=12" -c:v libwebp_anim -quality 60 -loop 0 output.we
 
 ### The quick way: four numbers
 
-At the top of `:root` there are color knobs. Change the numbers and the whole theme follows (borders, glows, scrollbars, selection, tags, badges, mentions, buttons).
+At the top of `:root` there are color knobs. Change the numbers and the whole theme follows (borders, glows, scrollbars, selection, badges, mentions, buttons).
 
 ```css
 --hue:     198;   /* main accent color, 0-360 */
@@ -90,16 +124,17 @@ At the top of `:root` there are color knobs. Change the numbers and the whole th
 --hue-bg:  255;   /* tint of the dark panels */
 ```
 
-| Look | `--hue` | `--hue-hi` | `--hue-2` |
-| --- | --- | --- | --- |
-| Blue (default) | 198 | 192 | 207 |
-| Pink | 330 | 325 | 340 |
-| Purple | 280 | 275 | 290 |
-| Green | 150 | 145 | 160 |
-| Orange | 20 | 15 | 30 |
-| Red | 0 | 355 | 10 |
+The file also has ready-made palettes in a comment inside `:root`. Copy one block over the four lines above:
 
-For `--hue-bg`: `255` is indigo (default), `220` is navy, `280` is violet, `170` is deep teal.
+| Palette | `--hue` | `--hue-hi` | `--hue-2` | `--hue-bg` |
+| --- | --- | --- | --- | --- |
+| Rem (blue, default) | 198 | 192 | 207 | 255 |
+| Ram (pink and red) | 345 | 352 | 335 | 340 |
+| Emilia (ice purple) | 262 | 252 | 272 | 260 |
+
+Other examples: green `150`, orange `20`, red `0` for `--hue`. For `--hue-bg`: `255` is indigo, `220` is navy, `0` is neutral.
+
+Only the Rem wallpaper ships with the theme. For Ram or Emilia, paste the URL of an image you like into `--wallpaper`. The Home button icon (`--dms-icon-svg-url`) can be swapped the same way.
 
 ### Fine control
 
@@ -119,13 +154,19 @@ All of these are in `:root`:
 | Active server ring speed | `--ring-speed` (seconds per turn, default `7s`) |
 | Speaking glow speed | `--speak-speed` (seconds per pulse, default `1.4s`) |
 | Handwritten header font | `--font-rem` (default Caveat) |
-| Cursor | Add `rem-cursor.png` (normal) and `rem-cursor-pointer.png` (over links and buttons) to `assets/`, 32x32 PNG with a transparent background. The theme loads them automatically and falls back to a blue arrow if they are missing. To use other links, edit `--cursor-default` and `--cursor-pointer` (the two numbers after `url()` are the click point) |
+| Cursor | `--cursor-default` and `--cursor-pointer` (see below) |
+
+### Cursor
+
+The theme ships a crystal-style cursor drawn as an inline SVG, so no image files are needed. It uses one arrow for normal areas and one with a small sparkle over links and buttons. Text fields keep the normal I-beam.
+
+To use your own cursor, replace the value of `--cursor-default-base` and `--cursor-pointer-base` with a `url(...)` to a 32x32 image. The two numbers after the `url()` are the click point (`4 3` is the tip of the arrow).
 
 ### Tags, badges and mentions
 
-Server tags (PRX, GODA and so on) and profile badges have no box, fill or glow. Bot tags (APP) are left as Discord draws them. The rule that flattens server tags is under **NO BOX ON SERVER TAGS** near the end of the file.
+Server tags (PRX, GODA and so on) have no box, fill or glow. Bot tags (APP) are left as Discord draws them. The rule that flattens server tags is under **NO BOX ON SERVER TAGS** near the end of the file.
 
-Two rules near the end of the file, under **MENTIONS & COUNTERS**, control the rest:
+The rules under **MENTIONS & COUNTERS** control the rest:
 
 - Inline @mentions get a blue box.
 - Unread and mention counters get a blue fill and keep their pill shape.
@@ -134,20 +175,21 @@ Edit those rules to change the fill, border or glow, or delete the `.mention` ru
 
 ### Font
 
-The theme uses Figtree from Google Fonts. To change it, replace the font name in the `@import` line at the top, then replace `'Figtree'` in the body font rule and in `--font-primary` and `--font-display`.
+The theme uses Figtree from Google Fonts. To change it, replace the font name in the first `@import` line at the top, then replace `'Figtree'` in the body font rule and in `--font-primary` and `--font-display`.
 
-Caveat (from Google Fonts) is used for the server name and channel headers. To use another font there, change `--font-rem` and the second `@import` line. `assets/Caveat-VariableFont_wght.ttf` is bundled in this repo as a local copy.
+Caveat (from Google Fonts) is used for the server name and channel headers. To use another font there, change `--font-rem` and the second `@import` line.
 
-### Status colors
+### Window buttons
 
-The red, yellow and green window control buttons use fixed colors on purpose, so they stay recognizable whatever hue you pick.
+The window controls are red, yellow and green dots inside a small pill at the top right, next to the inbox button. Their colors are fixed on purpose, so they stay recognizable whatever hue you pick.
 
 ---
 
 ## Performance
 
 - The wallpaper is an animated WebP (about 6 MB, down from a 24 MB GIF).
-- For weak GPUs, find **LITE MODE** at the end of the file and remove the comment markers around it. It turns off all blur. Also switch `--wallpaper` to the static `.jpg`.
+- For weak GPUs, the easy way is `--style-preset: solid;`. It turns off the wallpaper and all blur.
+- The manual way: find **LITE MODE** at the end of the animations section and remove the comment markers around it. It turns off all blur. Also switch `--wallpaper` to the static `.jpg`.
 - Animations switch off automatically if your OS has "reduce motion" enabled.
 
 ---
@@ -163,14 +205,26 @@ Discord renames some internal classes in updates. Specific names are matched saf
 
 A list of the hashes in use is in the **MAINTENANCE** comment at the top of the file.
 
+**The active server ring or the profile card does not show.**
+These use class names that Discord changes now and then. Inspect the element with `Ctrl+Shift+I`, then update the matching selector in the **VISUAL POLISH** section.
+
+**The speaking glow does not show.**
+It only appears while someone is talking in a voice channel.
+
 **The channel list touches or hides behind the bottom panel.**
 The channel list leaves room for the user, voice and music panels using a value Discord provides (`--custom-app-panels-height`), plus `--gap`. Increase `--gap` for more space between them.
 
+**The member list jumps when I hover it.**
+That is `--collapsible-members`. Set it to `off` to keep the list at full width.
+
 **The wallpaper does not show.**
-Check that the image link opens in a browser and that the file is committed in the repo.
+Check that the image link opens in a browser, that the file is committed in the repo, and that `--style-preset` is not set to `solid`.
 
 **A tag or badge looks different from the others.**
 Inspect it with `Ctrl+Shift+I` and add its class name to the tag rule at the end of the file.
+
+**My edits keep disappearing.**
+Your client may be auto-updating the theme from `@updateUrl`. Remove that line from your local copy.
 
 ---
 
@@ -184,7 +238,7 @@ Questions, bug reports or screenshots of your setup are welcome in the Team SNC 
 
 - Created by **gvt22**, **Team SNC**.
 - The idea came from **refact0r**'s themes, especially [Midnight](https://github.com/refact0r/midnight-discord). Special thanks for the inspiration. Midnight is MIT licensed, so please keep its notice if you reuse any of its code.
-- Fonts: Figtree (loaded from Google Fonts) and Caveat (loaded from Google Fonts, copy bundled in `assets/`), both open source.
+- Fonts: Figtree and Caveat, both loaded from Google Fonts and open source.
 - Wallpaper: an animated Rem (Re:Zero) live wallpaper. The original artist is unknown. If you made it or know who did, please open an issue so they can be credited, or so it can be removed.
 
 ## License
