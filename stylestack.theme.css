@@ -348,13 +348,15 @@ body,
 
 /* Server list */
 [class*='guilds_'] {
-    margin-bottom: calc(var(--gap));
+    margin-bottom: 0;
     margin-right: var(--gap);
 }
 
-/* Channel list */
+/* Channel list — ends above the bottom panels.
+   --custom-app-panels-height is set by Discord and always holds the real
+   height of the user / voice / music panels, so it adjusts by itself. */
 [class*='sidebarList_'] {
-    margin-bottom: var(--gap);
+    margin-bottom: calc(var(--custom-app-panels-height, 70px) + var(--gap));
 }
 
 /* User panel — pinned to bottom */
@@ -953,6 +955,7 @@ body,
 [class*='panels_'] {
     right: 0;
     left: unset;
+    width: calc(var(--custom-guild-sidebar-width, 312px) - var(--custom-guild-list-width, 72px));
 }
 
 /* ENHANCEMENT 1 — GPU Optimization (removed)
@@ -1167,7 +1170,6 @@ body,
 }
 
 [class*='numberBadge'],
-[class*='badge_'],
 [class*='mentionsBadge'] {
     animation: ss-badge-pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) 4 !important;
     background: linear-gradient(135deg, var(--accent-3) 0%, var(--accent-4) 100%) !important;
@@ -1315,14 +1317,12 @@ svg,
 }
 
 [class*='numberBadge'],
-[class*='badge_'],
 [class*='mentionsBadge'] {
     position: relative !important;
     overflow: visible !important;
 }
 
 [class*='numberBadge']::after,
-[class*='badge_']::after,
 [class*='mentionsBadge']::after {
     content: '' !important;
     position: absolute !important;
@@ -1440,13 +1440,9 @@ h1, h2 {
     text-shadow: 0 0 10px var(--glow-blue);
 }
 
-/* ─── TAGS & BADGES — one blue box style ─────────────────────────── */
-/* Bot tags (APP), guild tags (PRX, Anii ...), text badges, inline @mentions */
-[class*='botTag'],
-[class*='guildTag'],
-[class*='clanTag'],
-[class*='chipletContainer'],
-[class*='textBadge'],
+/* ─── MENTIONS & COUNTERS ────────────────────────────────────────── */
+/* Bot tags (APP) and server tags (PRX, GODA ...) are left as Discord draws
+   them — no extra box. Only inline @mentions get the blue box. */
 .mention {
     background: linear-gradient(135deg,
         hsla(var(--hue), 100%, 62%, 0.30),
@@ -1457,10 +1453,9 @@ h1, h2 {
     box-shadow: 0 0 8px hsla(var(--hue), 100%, 62%, 0.30) !important;
 }
 
-/* Unread / mention counters keep their pill shape, same blue fill */
+/* Unread / mention counters: blue fill, pill shape */
 [class*='numberBadge'],
-[class*='mentionsBadge'],
-[class*='badge_'] {
+[class*='mentionsBadge'] {
     background: linear-gradient(135deg, hsl(var(--hue), 100%, 58%), hsl(var(--hue-2), 100%, 50%)) !important;
     color: hsl(var(--hue-bg), 60%, 6%) !important;
     box-shadow: 0 0 10px hsla(var(--hue), 100%, 62%, 0.55) !important;
@@ -1496,3 +1491,16 @@ a:hover {
     --bg-4: hsla(var(--hue-bg), 55%,  5%, 0.95);
 }
 */
+
+/* ─── NO BOX ON SERVER TAGS ──────────────────────────────────────── */
+/* Server tag chips (PRX, GODA, Anii ...) keep their icon and text but lose
+   the box: no fill, border or glow behind them. */
+[class*='chiplet'],
+[class*='Chiplet'],
+[class*='guildTag'],
+[class*='clanTag'] {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    animation: none !important;
+}

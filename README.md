@@ -104,14 +104,16 @@ All of these are in `:root`:
 | Shape and spacing | `--gap`, `--radius-sm`, `--radius-md`, `--radius-lg`, `--border-thickness` |
 | Server list home icon | `--dms-icon-svg-url` (must be an SVG link) |
 
-### Tags and badges
+### Tags, badges and mentions
 
-All tags share one blue box style at the end of the file, under **TAGS & BADGES**.
+Server tags (PRX, GODA and so on) and profile badges have no box, fill or glow. Bot tags (APP) are left as Discord draws them. The rule that flattens server tags is under **NO BOX ON SERVER TAGS** near the end of the file.
 
-- Bot tags (APP), guild tags and inline @mentions use the first rule.
-- Unread and mention counters use the second rule and keep their pill shape.
+Two rules near the end of the file, under **MENTIONS & COUNTERS**, control the rest:
 
-Edit those two rules to change the fill, border, corner radius or glow.
+- Inline @mentions get a blue box.
+- Unread and mention counters get a blue fill and keep their pill shape.
+
+Edit those rules to change the fill, border or glow, or delete the `.mention` rule to get plain mentions.
 
 ### Font
 
@@ -143,6 +145,9 @@ Discord renames some internal classes in updates. Specific names are matched saf
 3. Find and Replace the old hash with the new one in `stylestack.theme.css`.
 
 A list of the hashes in use is in the **MAINTENANCE** comment at the top of the file.
+
+**The channel list touches or hides behind the bottom panel.**
+The channel list leaves room for the user, voice and music panels using a value Discord provides (`--custom-app-panels-height`), plus `--gap`. Increase `--gap` for more space between them.
 
 **The wallpaper does not show.**
 Check that the image link opens in a browser and that the file is committed in the repo.
