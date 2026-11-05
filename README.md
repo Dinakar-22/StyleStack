@@ -5,8 +5,6 @@ Semi-transparent blurred panels, glowing blue borders, smooth spring animations,
 
 Works with **Vencord**, **BetterDiscord** and any client that loads `.theme.css` files.
 
-> Still under development. Expect small changes between versions.
-
 ![StyleStack overview](assets/screenshots/overview.png)
 
 ---
